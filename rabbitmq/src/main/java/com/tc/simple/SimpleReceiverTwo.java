@@ -11,7 +11,7 @@ import java.util.concurrent.TimeoutException;
  * @Date: 2020/1/22 20:05
  * @Description:
  */
-public class SimpleReceiver {
+public class SimpleReceiverTwo {
     private final static String QUEUE_NAME = "mq_simple_queue";
 
     public static void main(String[] args) throws IOException, TimeoutException {
@@ -24,10 +24,8 @@ public class SimpleReceiver {
             @Override
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                 // body 即消息体
-                String routingKey = envelope.getRoutingKey();
-                System.out.println("简单模式默认的路由key"+routingKey);
                 String msg = new String(body);
-                System.out.println(" [x] received--1 : " + msg + "!");
+                System.out.println(" [x] received--2 : " + msg + "!");
                 //multiple 是不是批量确认
                 channel.basicAck(envelope.getDeliveryTag(), false);
             }
