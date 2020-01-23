@@ -1,5 +1,6 @@
 package com.tc.simple;
 
+import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.tc.config.ConnectionUtil;
@@ -22,6 +23,7 @@ public class SimpleSend {
         Channel channel = connection.createChannel();
         // 声明（创建）队列
         channel.queueDeclare(QUEUE_NAME, true, false, false, null);
+        //channel.exchangeDeclare("simple",BuiltinExchangeType.TOPIC)
         // 消息内容
         String message = "简单的消息";
         // 向指定的队列中发送消息

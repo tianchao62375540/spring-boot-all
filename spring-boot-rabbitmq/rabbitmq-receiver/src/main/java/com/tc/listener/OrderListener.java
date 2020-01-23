@@ -15,4 +15,8 @@ public class OrderListener {
     public void get(String message){
         System.out.println(message);
     }
+    @RabbitListener(queues = "bootQueue")
+    public void getbootQueue(String message){
+        System.out.println(message);
+    }
 }
