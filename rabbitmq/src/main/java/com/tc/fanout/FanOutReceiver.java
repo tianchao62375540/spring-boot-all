@@ -16,7 +16,7 @@ public class FanOutReceiver {
         Connection connection = ConnectionUtil.getConnection();
         Channel channel = connection.createChannel();
         channel.queueDeclare("fanout_query_one", true, false, false, null);
-        channel.exchangeDeclare(FanOutSend.exchange, BuiltinExchangeType.FANOUT);
+        channel.exchangeDeclare(FanOutSend.exchange, BuiltinExchangeType.FANOUT,true);
         //绑定队列和交换机的关系
         channel.queueBind("fanout_query_one", FanOutSend.exchange, "");
         channel.basicConsume("fanout_query_one", true, new DefaultConsumer(channel){

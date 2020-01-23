@@ -1,0 +1,7 @@
+tc:
+  rabbitmq:
+    hostname: 127.0.0.1
+    port: 5672
+    username: mq
+    password: mq
+    virtualHost: /myHost

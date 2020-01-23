@@ -16,7 +16,7 @@ public class FanOutReceiverTwo {
         Connection connection = ConnectionUtil.getConnection();
         Channel channel = connection.createChannel();
         channel.queueDeclare("fanout_query_two", true, false, false, null);
-        channel.exchangeDeclare(FanOutSend.exchange, BuiltinExchangeType.FANOUT);
+        channel.exchangeDeclare(FanOutSend.exchange, BuiltinExchangeType.FANOUT,true);
         channel.queueBind("fanout_query_two", FanOutSend.exchange, "");
         channel.basicConsume("fanout_query_two", true, new DefaultConsumer(channel){
             @Override

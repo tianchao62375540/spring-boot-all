@@ -20,12 +20,12 @@ public class FanOutSend {
         Connection connection = ConnectionUtil.getConnection();
         Channel channel = connection.createChannel();
         //fanout交换机   发送者根本不知道消费者是谁  只绑定交换机
-        channel.exchangeDeclare("fanout_exchange", BuiltinExchangeType.FANOUT);
+        channel.exchangeDeclare("fanout_exchange", BuiltinExchangeType.FANOUT,true);
         for (int i = 0; i < 50; i++) {
             String message = "fanout的消息 "+i;
             channel.basicPublish("fanout_exchange", "",null , message.getBytes());
             System.out.println("发送"+message+" 成功");
-            Thread.sleep(5000);
+            //Thread.sleep(5000);
         }
         channel.close();
         connection.close();
