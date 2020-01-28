@@ -4,6 +4,8 @@ import com.rabbitmq.client.Channel;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -17,6 +19,9 @@ import java.util.Date;
  */
 @Component
 public class OrderListener {
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     @RabbitListener(queues = "fanout_query_one")
     public void get(String message){
@@ -82,6 +87,10 @@ public class OrderListener {
         System.out.println(new String(message.getBody()));
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         System.out.println(simpleDateFormat.format(new Date()));
-        channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+        //channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+        channel.basicNack(message.getMessageProperties().getDeliveryTag(), false, false);
+        rabbitTemplate.convertAndSend("dingShiExchange", "order.two.insert", message.getBody());
     }
+
+
 }

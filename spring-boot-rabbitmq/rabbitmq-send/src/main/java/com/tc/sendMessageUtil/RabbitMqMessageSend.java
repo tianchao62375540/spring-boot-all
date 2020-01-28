@@ -6,6 +6,7 @@ import org.springframework.amqp.rabbit.support.CorrelationData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,6 +34,8 @@ public class RabbitMqMessageSend {
         map.put("data", message);
         map.put("date", new Date());
         map.put("name", "田超");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        System.out.println(simpleDateFormat.format(new Date()));
         rabbitTemplate.convertAndSend(exchange, routingKey, map,correlationData);
     }
 

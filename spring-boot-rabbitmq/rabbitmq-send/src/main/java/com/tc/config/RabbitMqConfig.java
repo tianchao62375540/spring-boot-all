@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.tc.config.properties.RabbitMqProperties;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -95,5 +96,7 @@ public class RabbitMqConfig {
         });
         return rabbitTemplate;
     }
+
+
 
 }
