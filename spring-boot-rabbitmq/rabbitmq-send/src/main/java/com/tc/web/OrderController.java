@@ -19,7 +19,7 @@ public class OrderController {
 
     @RequestMapping("/order")
     public ResponseEntity<String> order(String id,String routingKey,String exchange){
-        rabbitMqMessageSend.sendMessage("订单号 "+id+" 下单了", routingKey, exchange);
+        rabbitMqMessageSend.sendMessage1("订单号 "+id+" 下单了", routingKey, exchange);
         return ResponseEntity.ok("下单成功");
     }
 }
