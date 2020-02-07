@@ -40,6 +40,8 @@ public class OrderListener {
         System.out.println("getbootQueueObj............");
         System.out.println(message);
         System.out.println(message.getBody());
+        String correlationId = message.getMessageProperties().getCorrelationId();
+        System.out.println(correlationId+"==============================");
         MessageProperties messageProperties = message.getMessageProperties();
         System.out.println(messageProperties.getReceivedRoutingKey());
         if (placeAnOrder()){

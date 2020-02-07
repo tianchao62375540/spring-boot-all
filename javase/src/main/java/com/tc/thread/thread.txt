@@ -1,0 +1,50 @@
+
+
+线程池
+java.util.concurrent.Executor 接口 第一层  -->  java.util.concurrent.Executors
+    java.util.concurrent.ExecutorService 接口 第二层
+        java.util.concurrent.AbstractExecutorService 第三层 执行和提交接口进行合并 submit方法实现
+            java.util.concurrent.ThreadPoolExecutor 第四层
+
+
+    java.util.concurrent.Executor.execute
+    java.util.concurrent.ExecutorService.submit(java.util.concurrent.Callable<T>)
+    java.util.concurrent.ExecutorService.submit(java.lang.Runnable)
+    java.util.concurrent.ExecutorService.submit(java.lang.Runnable, T)
+
+    面试题：java线程池里面execute和submit方法的区别？
+    1.有没有返回值
+
+
+
+    public ThreadPoolExecutor(int corePoolSize, //核心线程数量
+                                  int maximumPoolSize, //最大线程数量
+                                  long keepAliveTime, //保持时长
+                                  TimeUnit unit, //单位
+                                  BlockingQueue<Runnable> workQueue  //阻塞队列
+                                  ) {
+            this(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue,
+                //线程工厂
+                 Executors.defaultThreadFactory(),
+                 //拒绝策略
+                 defaultHandler);
+        }
+
+    //execute方法
+
+   int c = ctl.get();
+   //如果小于核心
+   if (workerCountOf(c) < corePoolSize) {
+       if (addWorker(command, true)) //放到核心线程执行
+           return;
+       c = ctl.get();
+   }
+   if (isRunning(c) && workQueue.offer(command)) { //如果大于核心 放入队列
+       int recheck = ctl.get();
+       if (! isRunning(recheck) && remove(command))
+           reject(command);//拒绝策略
+       else if (workerCountOf(recheck) == 0)
+           addWorker(null, false);//加入任务
+   }
+   else if (!addWorker(command, false))
+       reject(command);//拒绝策略
