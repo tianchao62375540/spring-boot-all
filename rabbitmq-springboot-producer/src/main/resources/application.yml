@@ -1,0 +1,12 @@
+spring:
+  rabbitmq:
+    port: 5672
+    virtual-host: /myHost
+    username: mq
+    password: mq
+    host: 127.0.0.1
+    connection-timeout: 15000
+    publisher-confirms: true
+    publisher-returns: true
+    template:
+      mandatory: true

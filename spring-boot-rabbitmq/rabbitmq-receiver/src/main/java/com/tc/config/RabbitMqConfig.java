@@ -246,4 +246,30 @@ public class RabbitMqConfig {
         return BindingBuilder.bind(dingShiQueue()).to(dingShiExchange()).with("order.two.insert");
     }
 
+
+    /**
+     * 动态超时时间
+     * @return
+     */
+    @Bean
+    public Queue autoTTlQueue(){
+        return QueueBuilder.durable("autoTTlQueue")
+                .withArgument("x-dead-letter-exchange","dlxExchange")
+                .withArgument("x-dead-letter-routing-key", "dlxQueue")
+                .build();
+    }
+
+    @Bean
+    public Exchange dlxExchange(){
+        return new DirectExchange("dlxExchange");
+    }
+    @Bean
+    public Queue dlxQueue(){
+        return new Queue("dlxQueue", true);
+    }
+    @Bean
+    public Binding bindingdlxQueue(Queue dlxQueue,Exchange dlxExchange){
+        return BindingBuilder.bind(dlxQueue).to(dlxExchange).with("dlxQueue").noargs();
+    }
+
 }

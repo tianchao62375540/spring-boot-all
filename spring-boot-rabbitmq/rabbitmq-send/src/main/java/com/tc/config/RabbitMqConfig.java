@@ -51,7 +51,7 @@ public class RabbitMqConfig {
             @Override
             public void confirm(CorrelationData correlationData, boolean ack, String cause) {
                 //确认的订单
-                System.out.println(correlationData.getId());
+                //**System.out.println(correlationData.getId());
                 System.out.println("ack:"+ack);
                 System.out.println("原因:"+ cause);
                 System.out.println("confirm:"+Thread.currentThread().hashCode());

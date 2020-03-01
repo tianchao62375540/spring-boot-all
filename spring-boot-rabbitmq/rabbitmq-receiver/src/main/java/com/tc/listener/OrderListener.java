@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @Auther: tianchao
@@ -23,21 +24,23 @@ public class OrderListener {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
+    private static final AtomicInteger num = new AtomicInteger(0);
+
     @RabbitListener(queues = "fanout_query_one")
     public void get(String message){
         System.out.println(message);
     }
-    //@RabbitListener(queues = "bootQueue",containerFactory = "simpleRabbitListenerContainerFactory")
+    @RabbitListener(queues = "bootQueue",containerFactory = "simpleRabbitListenerContainerFactory")
     public void getbootQueue(String message){
 
         //int i = 1/0;
-        System.out.println("getbootQueue............");
+        System.out.println("getbootQueue...dddd........."+num.incrementAndGet());
         System.out.println(message);
     }
     @RabbitListener(queues = "bootQueue",containerFactory = "simpleRabbitListenerContainerFactory")
     public void getbootQueueObj(Message message, Channel channel) throws IOException {
         //int i = 1/0;
-        System.out.println("getbootQueueObj............");
+        System.out.println("getbootQueueObj............"+num.incrementAndGet());
         System.out.println(message);
         System.out.println(message.getBody());
         String correlationId = message.getMessageProperties().getCorrelationId();
@@ -56,7 +59,7 @@ public class OrderListener {
         return false;
     }
 
-    @RabbitListener(queues = "lifeQueue",containerFactory = "simpleRabbitListenerContainerFactory")
+    //@RabbitListener(queues = "lifeQueue",containerFactory = "simpleRabbitListenerContainerFactory")
     public void processLife(Message message, Channel channel) throws IOException {
         System.out.println("processLife lifeQueue....");
         System.out.println(message);
@@ -92,6 +95,17 @@ public class OrderListener {
         //channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
         channel.basicNack(message.getMessageProperties().getDeliveryTag(), false, false);
         rabbitTemplate.convertAndSend("dingShiExchange", "order.two.insert", message.getBody());
+    }
+
+
+    @RabbitListener(queues = "dlxQueue",containerFactory = "simpleRabbitListenerContainerFactory")
+    public void dlxQueue(Message message, Channel channel) throws IOException {
+        System.out.println("dlxQueue...."+message);
+        System.out.println(new String(message.getBody(),"UTF-8"));
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        System.out.println(simpleDateFormat.format(new Date()));
+        //channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+        channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
     }
 
 

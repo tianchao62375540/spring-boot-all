@@ -40,7 +40,6 @@ public class RabbitMqMessageSend {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         System.out.println(simpleDateFormat.format(new Date()));
         rabbitTemplate.convertAndSend(exchange, routingKey, map,correlationData);
-        System.out.println("");
     }
 
 

@@ -1,0 +1,27 @@
+spring:
+  rabbitmq:
+    port: 5672
+    virtual-host: /myHost
+    username: mq
+    password: mq
+    host: 127.0.0.1
+    connection-timeout: 15000
+    listener:
+      simple:
+        acknowledge-mode: manual
+        concurrency: 5
+        max-concurrency: 10
+
+customer:
+  rabbitmq:
+    listener:
+      order:
+        queue:
+          name: queue-order
+          durable: true
+        exchange:
+          name: exchange-order
+          durable: true
+          type: topic
+          ignoreDeclarationExceptions: true
+        key: order.#
