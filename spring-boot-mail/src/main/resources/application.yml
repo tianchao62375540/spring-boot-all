@@ -1,0 +1,8 @@
+spring:
+  mail:
+    host: smtp.163.com
+    username: tianchao623755@163.com
+    password: JULGLOBEBSZAZAZQ
+mail:
+  fromMail:
+    addr: tianchao623755@163.com

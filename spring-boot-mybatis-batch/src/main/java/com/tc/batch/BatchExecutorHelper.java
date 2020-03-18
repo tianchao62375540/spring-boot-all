@@ -23,15 +23,11 @@ import java.util.List;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 @Slf4j
 public class BatchExecutorHelper implements ApplicationContextAware {
-
     ApplicationContext context;
-
     private String statement;
-
     public void setStatement(String statement) {
         this.statement = statement;
     }
-
     public <T> Long insertObj(List<T> list){
         Assert.assertTrue("导入数据不能为0--不正确",list!=null&&list.size()>0);
         long begin = System.currentTimeMillis();
@@ -67,13 +63,8 @@ public class BatchExecutorHelper implements ApplicationContextAware {
         System.out.println((end- begin)+"毫秒 处理"+list.size()+"条数据" + Thread.currentThread().getName());
         return Long.valueOf(list.size());
     }
-
-
-
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.context = applicationContext;
     }
-
-
 }
