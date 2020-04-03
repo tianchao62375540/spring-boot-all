@@ -25,9 +25,9 @@ public class MailUtilTest {
     public void testSend(){
         Mail mail = new Mail();
         //mail.setTo("tianchao623755@163.com");
-        mail.setTo("455433520@qq.com");
+        mail.setTo("tianchao623755@163.com");
         mail.setTitle("邮件主题主题");
-        mail.setContent("您好啊我只是想测试啊 wahaha");
+        mail.setContent("您好啊我只是想测试啊 ");
         mailUtil.send(mail);
     }
 

@@ -1,0 +1,21 @@
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/spring_cache
+    username: root
+    password:
+  redis:
+    host: localhost
+    port: 6379
+logging:
+  level:
+    com:
+      tc:
+        cache:
+          mapper: debug
+  file: log/log.log
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+debug: true
