@@ -5,7 +5,10 @@ server:
 spring:
   application:
     name: security-spring-boot
-  mvc:
-    view:
-      prefix: /WEB-INF/views/
-      suffix: .jsp
+  thymeleaf:
+    prefix: classpath:/templates/
+  datasource:
+    password:
+    username: root
+    url: jdbc:mysql://localhost:3306/user_db
+    driver-class-name: com.mysql.jdbc.Driver

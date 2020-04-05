@@ -2,11 +2,15 @@ package com.tc.security.springboot.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
@@ -17,13 +21,14 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
  * @Description:
  */
 @Configuration
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     /**
      * 定义用户信息服务
      * @return
      */
-    @Bean
+    //@Bean
     public UserDetailsService userDetailsService() {
         InMemoryUserDetailsManager inMemoryUserDetailsManager = new InMemoryUserDetailsManager();
         inMemoryUserDetailsManager.createUser(User.withUsername("zhangsan").password("123").authorities("p1").build());
@@ -37,7 +42,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Bean
     public PasswordEncoder passwordEncoder(){
-        return NoOpPasswordEncoder.getInstance();
+        return new BCryptPasswordEncoder();
     }
 
     /**
@@ -47,14 +52,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers("/r/r1").hasAuthority("p1")
-                .antMatchers("/r/r2").hasAuthority("p2")
-                .antMatchers("/r/**").authenticated()
+        http.csrf().disable()
+                .authorizeRequests()
+                //.antMatchers("/r/r1").hasAuthority("p1")
+                //.antMatchers("/r/r2").hasAuthority("p2")
+                //.antMatchers("/r/**").authenticated()
                 .anyRequest().permitAll()
                 .and()
                 .formLogin()//允许表单登录
-                .successForwardUrl("/login-success");//自定义登录成功的页面地址
-        super.configure(http);
+                    .loginPage("/login-view")
+                    .loginProcessingUrl("/loginUrl")
+                    .successForwardUrl("/login-success")//自定义登录成功的页面地址
+                .and()
+                .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                .and()
+                .logout()
+                    .logoutUrl("/logout")
+                    .logoutSuccessUrl("/login-view?logout");
+        //super.configure(http);
     }
 }
