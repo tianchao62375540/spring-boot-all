@@ -21,7 +21,9 @@
 
         <!--model文件保存路径-->
         <javaModelGenerator targetPackage="com.tc.model"
-                            targetProject="src/main/java"/>
+                            targetProject="src/main/java">
+            <property name="" value=""
+        </javaModelGenerator>       
 
         <!--mapper.xml文件保存路径-->
         <sqlMapGenerator targetPackage="mapper"
