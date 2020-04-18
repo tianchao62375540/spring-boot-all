@@ -6,20 +6,24 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
+import org.springframework.security.oauth2.provider.client.JdbcClientDetailsService;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.code.InMemoryAuthorizationCodeServices;
+import org.springframework.security.oauth2.provider.code.JdbcAuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 
+import javax.sql.DataSource;
 import java.util.Arrays;
 
 /**
@@ -50,6 +54,8 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
     @Autowired
     private JwtAccessTokenConverter jwtAccessTokenConverter;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     /**
      * 配置客户端详情服务
@@ -58,7 +64,7 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
      */
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        clients.inMemory()
+        /*clients.inMemory()
                 //客户端id
                 .withClient("c1")
                 //客户端秘钥
@@ -72,7 +78,16 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
                 //false跳转到授权页面，让用户授权，是ture的话就直接默认同意了
                 .autoApprove(false)
                 .redirectUris("http://www.baidu.com")
-                ;
+                ;*/
+        //数据库
+        clients.withClientDetails(clientDetailsService);
+    }
+
+    @Bean
+    public ClientDetailsService clientDetailsService(DataSource dataSource){
+        JdbcClientDetailsService clientDetailsService = new JdbcClientDetailsService(dataSource);
+        clientDetailsService.setPasswordEncoder(passwordEncoder);
+        return clientDetailsService;
     }
 
     /**
@@ -104,10 +119,17 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
      * 设置授权码模式的授权码如何存取，暂时采用内存方式
      * @return
      */
-    @Bean
+   /* @Bean
     public AuthorizationCodeServices authorizationCodeServices(){
         return new InMemoryAuthorizationCodeServices();
+    }*/
+
+    @Bean
+    public AuthorizationCodeServices authorizationCodeServices(DataSource dataSource){
+        //设置授权码模式的授权码如何存取
+        return new JdbcAuthorizationCodeServices(dataSource);
     }
+
 
     /**
      * 令牌访问端点
