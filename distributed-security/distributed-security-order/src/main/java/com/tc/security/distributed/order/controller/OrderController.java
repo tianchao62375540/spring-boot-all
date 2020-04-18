@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderController {
 
     @GetMapping("/r1")
-    @PreAuthorize("hasAnyAuthority('p1')")
+    @PreAuthorize("hasAnyAuthority('p4')")
     public String r1(){
         return "访问资源1";
     }

@@ -16,7 +16,11 @@ import org.springframework.security.oauth2.provider.code.AuthorizationCodeServic
 import org.springframework.security.oauth2.provider.code.InMemoryAuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
+import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+
+import java.util.Arrays;
 
 /**
  * @Auther: tianchao
@@ -43,6 +47,9 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    @Autowired
+    private JwtAccessTokenConverter jwtAccessTokenConverter;
+
 
     /**
      * 配置客户端详情服务
@@ -54,17 +61,18 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
         clients.inMemory()
                 //客户端id
                 .withClient("c1")
-                //客户端密码
+                //客户端秘钥
                 .secret(new BCryptPasswordEncoder().encode("secret"))
                 //客户端可以访问的资源id
                 .resourceIds("res1")
-                //该client允许的授权类型
+                //该client允许的授权类型  授权码模式 密码模式 客户端模式 简要模式 刷新令牌
                 .authorizedGrantTypes("authorization_code","password","client_credentials","implicit","refresh_token")
                 //允许的授权范围（相当于客户端的权限）
                 .scopes("all")
                 //false跳转到授权页面，让用户授权，是ture的话就直接默认同意了
                 .autoApprove(false)
-                .redirectUris("http://www.baidu.com");
+                .redirectUris("http://www.baidu.com")
+                ;
     }
 
     /**
@@ -79,6 +87,12 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
         service.setSupportRefreshToken(true);
         //令牌存储
         service.setTokenStore(tokenStore);
+        /**
+         * jwt converter 设置进去 ，令牌增强
+         */
+        TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
+        tokenEnhancerChain.setTokenEnhancers(Arrays.asList(jwtAccessTokenConverter));
+        service.setTokenEnhancer(tokenEnhancerChain);
         //令牌默认有效期2小时
         service.setAccessTokenValiditySeconds(7200);
         //刷新令牌默认有效期2天
@@ -103,9 +117,9 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         endpoints
-                //认证管理器
+                //认证管理器 //针对密码模式
                 .authenticationManager(authenticationManager)
-                //授权码服务
+                //授权码服务 //针对授权码模式
                 .authorizationCodeServices(authorizationCodeServices)
                 //令牌管理五福
                 .tokenServices(tokenService())
@@ -114,6 +128,7 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
 
     /**
      * 安全约束配置
+     * 允许用户如何访问
      * @param security
      * @throws Exception
      */
