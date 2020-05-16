@@ -21,7 +21,7 @@ public class WebSecurityConfigTest {
     public void testBCrypt(){
         String gensalt = BCrypt.gensalt();
         System.out.println(gensalt);
-        String hashpw = BCrypt.hashpw("123", gensalt);
+        String hashpw = BCrypt.hashpw("secret", gensalt);
         System.out.println(hashpw);
         //$2a$10$NhDbmSTtF/kei7/Zq7AyJOH7/m9BahojbwJa9KDtjL3cFSMM5S2BC
         //$2a$10$kGrrqDBsxEv4avACOjJ8teBjaG3kRsRiySskVaVKJzS8Mz2X2WKlO
