@@ -28,7 +28,7 @@ public class TokenConfig {
         return new InMemoryTokenStore();
     }*/
     @Bean
-    public TokenStore tokenStore(){
+    public TokenStore tokenStore() {
         return new JwtTokenStore(accessTokenConverter());
     }
 
